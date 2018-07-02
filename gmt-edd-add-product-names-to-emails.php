@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * GitHub Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * Description: Add WP Rest API hooks into Easy Digital Downloads.
- * Version: 0.3.0
+ * Version: 0.3.1
  * Author: Chris Ferdinandi
  * Author URI: http://gomakethings.com
  * License: GPLv3
@@ -93,7 +93,7 @@
 		if ( $cart ) {
 			foreach( $cart as $key => $item ) {
 				$item_id = explode( '_', $item['id'] );
-				if ( has_term( 'membership-site', 'download_category',$item_id ) ) {
+				if ( has_term( 'membership-site', 'download_category',$item_id[0] ) ) {
 					return true;
 				}
 			}
@@ -129,10 +129,7 @@
 		$is_membership = gmt_edd_apnte_downloads_have_membership_access( $payment_id );
 
 		if ($is_membership) {
-			$message = edd_get_option( 'gmt_edd_apnte_membership_site', false );
-			if ($message) {
-				return $message;
-			}
+			return edd_get_option( 'gmt_edd_apnte_membership_site', false );
 		}
 
 		return '';
