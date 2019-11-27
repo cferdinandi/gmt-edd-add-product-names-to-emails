@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * GitHub Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * Description: Add WP Rest API hooks into Easy Digital Downloads.
- * Version: 0.4.0
+ * Version: 0.4.1
  * Author: Chris Ferdinandi
  * Author URI: http://gomakethings.com
  * License: GPLv3
@@ -156,7 +156,9 @@
 	 * @param  integer $payment_id The payment ID
 	 */
 	function gmt_edd_apnte_get_pricing_parity( $payment_id = 0 ) {
-		$discount = get_post_meta( $payment_id, 'pricing_parity_discount', true );
+		$payment = edd_get_payment($payment_id);
+		$payment_meta = $payment->get_meta();
+		$discount = $payment_meta['discount'];
 		if (empty($discount)) return '';
 		return $discount['country'] . ' - ' . $discount['amount'] . '%';
 	}
