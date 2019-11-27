@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * GitHub Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * Description: Add WP Rest API hooks into Easy Digital Downloads.
- * Version: 0.3.1
+ * Version: 0.4.0
  * Author: Chris Ferdinandi
  * Author URI: http://gomakethings.com
  * License: GPLv3
@@ -151,6 +151,17 @@
 	}
 
 
+	/**
+	 * Get the pricing parity discount
+	 * @param  integer $payment_id The payment ID
+	 */
+	function gmt_edd_apnte_get_pricing_parity( $payment_id = 0 ) {
+		$discount = get_post_meta( $payment_id, 'pricing_parity_discount', true );
+		if (empty($discount)) return '';
+		return $discount['country'] . ' - ' . $discount['amount'] . '%';
+	}
+
+
 
 	//
 	// Hooks and Filters
@@ -165,5 +176,6 @@
 		edd_add_email_tag( 'download_list_names', __( 'Adds a comma-separated listed of purchased product names', 'edd' ), 'gmt_edd_apnte_get_download_list_names' );
 		edd_add_email_tag( 'membership_site_message', __( 'Displays a custom message with purchases that include access to the membership site.', 'edd' ), 'gmt_edd_apnte_get_membership_message' );
 		edd_add_email_tag( 'purchase_key', __( 'The purchase key.', 'edd' ), 'gmt_edd_apnte_get_purchase_key' );
+		edd_add_email_tag( 'pricing_parity', __( 'The pricing parity discount.', 'edd' ), 'gmt_edd_apnte_get_pricing_parity' );
 	}
 	add_action( 'edd_add_email_tags', 'gmt_edd_apnte_setup_email_tags' );
