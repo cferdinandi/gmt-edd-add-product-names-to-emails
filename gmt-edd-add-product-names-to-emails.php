@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * GitHub Plugin URI: https://github.com/cferdinandi/gmt-edd-add-product-names-to-emails/
  * Description: Add WP Rest API hooks into Easy Digital Downloads.
- * Version: 0.4.2
+ * Version: 1.0.0
  * Author: Chris Ferdinandi
  * Author URI: http://gomakethings.com
  * License: GPLv3
@@ -33,7 +33,7 @@
 	 */
 	function gmt_edd_apnte_settings( $settings ) {
 
-		$slack_settings = array(
+		$apnte_settings = array(
 			array(
 				'id'    => 'gmt_edd_apnte_settings',
 				'name'  => '<strong>' . __( 'Email Settings', 'gmt_edd' ) . '</strong>',
@@ -49,9 +49,9 @@
 			),
 		);
 		if ( version_compare( EDD_VERSION, 2.5, '>=' ) ) {
-			$slack_settings = array( 'gmt_edd_apnte' => $slack_settings );
+			$apnte_settings = array( 'gmt_edd_apnte' => $apnte_settings );
 		}
-		return array_merge( $settings, $slack_settings );
+		return array_merge( $settings, $apnte_settings );
 	}
 	add_filter( 'edd_settings_extensions', 'gmt_edd_apnte_settings', 999, 1 );
 
@@ -70,10 +70,15 @@
 		$cart   = edd_get_payment_meta_cart_details( $payment_id, true );
 		$files  = array();
 
-		if( $cart ) {
-			foreach( $cart as $key => $item ) {
-				if( empty( $item['in_bundle'] ) ) {
-					$files[] = $item['name'];
+		if ( $cart ) {
+			foreach ( $cart as $key => $item ) {
+				if ( empty( $item['in_bundle'] ) ) {
+					$variable_prices = edd_has_variable_prices( $item['id'] );
+					$option = '';
+					if ($variable_prices && isset( $item['item_number']['options']['price_id'] )) {
+						$option = ' - ' . edd_get_price_option_name( $item['id'], $item['item_number']['options']['price_id'], 32 );
+					}
+					$files[] = $item['name'] . $option;
 				}
 			}
 		}
